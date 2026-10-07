@@ -48,8 +48,33 @@ export function App() {
         void captureText(planId, text).catch(() => undefined);
       }
     };
+    // IT-2: drop images (or a dragged link) anywhere on a plan screen.
+    const onDragOver = (e: DragEvent) => {
+      if (planId && e.dataTransfer?.types.some((t) => t === 'Files' || t === 'text/uri-list')) e.preventDefault();
+    };
+    const onDrop = (e: DragEvent) => {
+      if (!planId || !e.dataTransfer) return;
+      const files = [...e.dataTransfer.files].filter((f) => f.type.startsWith('image/'));
+      const uri = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+      if (!files.length && !uri.trim()) return;
+      e.preventDefault();
+      void (async () => {
+        if (files.length) {
+          for (const f of files) await captureFile(planId, f, undefined, f.name);
+          if (files.length > 1) showToast(`Saved ${files.length} photos`);
+        } else {
+          await captureText(planId, uri);
+        }
+      })().catch(() => undefined);
+    };
     document.addEventListener('paste', onPaste);
-    return () => document.removeEventListener('paste', onPaste);
+    document.addEventListener('dragover', onDragOver);
+    document.addEventListener('drop', onDrop);
+    return () => {
+      document.removeEventListener('paste', onPaste);
+      document.removeEventListener('dragover', onDragOver);
+      document.removeEventListener('drop', onDrop);
+    };
   }, [planId]);
 
   return (

@@ -86,3 +86,16 @@ test('DR15: sheets close with Escape and return focus to the trigger', async ({ 
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(fab).toBeFocused();
 });
+
+test('IT-2: drop an image onto a plan to capture it', async ({ page, browserName }) => {
+  test.skip(browserName === 'webkit', 'WebKit does not allow synthetic DataTransfer files');
+  await createWeddingPlan(page);
+  const bytes = [...(await import('node:fs')).readFileSync(PHOTO)];
+  await page.evaluate((arr) => {
+    const dt = new DataTransfer();
+    dt.items.add(new File([new Uint8Array(arr)], 'lehenga.png', { type: 'image/png' }));
+    document.body.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true }));
+  }, bytes);
+  await expect(page.getByRole('heading', { name: 'Saved' })).toBeVisible();
+  await expect(page.getByText('lehenga', { exact: true })).toBeVisible();
+});
