@@ -1,0 +1,21 @@
+{
+  "id": "indian-wedding",
+  "name": "Indian wedding",
+  "description": "Mehendi, Haldi, Sangeet, ceremony, reception",
+  "order": 1,
+  "functions": [
+    { "name": "Mehendi", "timeOfDay": "Afternoon", "dressCode": "Greens and florals" },
+    { "name": "Haldi", "timeOfDay": "Morning", "dressCode": "Yellow, nothing precious" },
+    { "name": "Sangeet", "timeOfDay": "Evening", "dressCode": "Glam, dance-ready" },
+    { "name": "Wedding ceremony", "timeOfDay": "Morning", "dressCode": "Traditional, jewel tones" },
+    { "name": "Reception", "timeOfDay": "Evening", "dressCode": "Indo-western black tie" }
+  ],
+  "optional": [
+    { "name": "Roka or engagement", "timeOfDay": "Evening", "dressCode": "" },
+    { "name": "Welcome dinner", "timeOfDay": "Evening", "dressCode": "" },
+    { "name": "Cocktail night", "timeOfDay": "Evening", "dressCode": "Cocktail" },
+    { "name": "Baraat", "timeOfDay": "Morning", "dressCode": "" },
+    { "name": "Vidaai", "timeOfDay": "Afternoon", "dressCode": "" },
+    { "name": "Travel days", "timeOfDay": "All day", "dressCode": "Comfortable" }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "conference",
+  "name": "Conference",
+  "description": "Three days plus a speaker dinner",
+  "order": 3,
+  "functions": [
+    { "name": "Day 1", "timeOfDay": "Morning", "dressCode": "Business casual" },
+    { "name": "Day 2", "timeOfDay": "Morning", "dressCode": "Business casual" },
+    { "name": "Day 3", "timeOfDay": "Morning", "dressCode": "Smart casual" },
+    { "name": "Speaker dinner", "timeOfDay": "Evening", "dressCode": "Cocktail" }
+  ],
+  "optional": [
+    { "name": "Travel day", "timeOfDay": "All day", "dressCode": "Comfortable" },
+    { "name": "Closing party", "timeOfDay": "Evening", "dressCode": "" }
+  ]
+}

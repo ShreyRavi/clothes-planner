@@ -1,0 +1,15 @@
+{
+  "id": "festival",
+  "name": "Festival",
+  "description": "Three days, layered and easy",
+  "order": 4,
+  "functions": [
+    { "name": "Day 1", "timeOfDay": "All day", "dressCode": "Comfortable, layered" },
+    { "name": "Day 2", "timeOfDay": "All day", "dressCode": "Bold" },
+    { "name": "Day 3", "timeOfDay": "All day", "dressCode": "Easy" }
+  ],
+  "optional": [
+    { "name": "Travel days", "timeOfDay": "All day", "dressCode": "" },
+    { "name": "Camp nights", "timeOfDay": "Night", "dressCode": "" }
+  ]
+}

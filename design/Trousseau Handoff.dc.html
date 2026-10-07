@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>html,body{margin:0;background:#E9E3D9}*{box-sizing:border-box}a{color:#A93A22}a:hover{color:#221C17}</style>
+</helmet>
+<div style="padding:64px;display:flex;flex-direction:column;gap:48px;font-family:'Instrument Sans',sans-serif;color:#221C17;width:1600px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6B6158">Handoff · v1 · Oct 2026</span>
+    <h1 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:56px">Trousseau tokens and components</h1>
+    <p style="margin:0;font-size:16px;color:#6B6158;max-width:760px">Source of truth for the build. Tokens map to CSS variables of the same name. The working prototype is <a href="Trousseau.dc.html">Trousseau.dc.html</a>.</p>
+  </div>
+
+  <section style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div style="background:#F6F2EB;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:20px">
+      <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:30px">Color, light</h2>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <sc-for list="{{ light }}" as="c" hint-placeholder-count="9">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="height:72px;border-radius:12px;border:1px solid #E2D9CC;background:{{ c.hex }}"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">{{ c.name }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6158">{{ c.hex }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#161311;color:#F1ECE4;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:20px">
+      <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:30px">Color, dark</h2>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <sc-for list="{{ dark }}" as="c" hint-placeholder-count="9">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="height:72px;border-radius:12px;border:1px solid #36302A;background:{{ c.hex }}"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">{{ c.name }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A99F93">{{ c.hex }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px">
+    <div style="background:#F6F2EB;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:16px">
+      <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:30px">Type</h2>
+      <p style="margin:0;font-size:14px;color:#6B6158">Newsreader for names of things (plans, functions, sheet titles). Instrument Sans for everything you read or tap. JetBrains Mono only for image placeholders and field labels.</p>
+      <div style="display:flex;flex-direction:column;border-top:1px solid #E2D9CC">
+        <div style="display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px solid #E2D9CC"><span style="width:150px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6158">display · 42/1.05</span><span style="font-family:'Newsreader',serif;font-size:42px;line-height:1.05">Every outfit</span></div>
+        <div style="display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px solid #E2D9CC"><span style="width:150px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6158">title · 34–38/1.1</span><span style="font-family:'Newsreader',serif;font-size:36px">Wedding ceremony</span></div>
+        <div style="display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px solid #E2D9CC"><span style="width:150px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6158">card · 23/1.15</span><span style="font-family:'Newsreader',serif;font-size:23px">Sangeet</span></div>
+        <div style="display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px solid #E2D9CC"><span style="width:150px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6158">body · 15–16/1.45</span><span style="font-size:16px">Mint chikankari anarkali</span></div>
+        <div style="display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px solid #E2D9CC"><span style="width:150px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6158">meta · 13/1.3</span><span style="font-size:13px;color:#6B6158">Ritu Kumar · ₹38,500</span></div>
+        <div style="display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px solid #E2D9CC"><span style="width:150px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6158">label · 12 caps +.08em</span><span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6158">Slots for each outfit</span></div>
+      </div>
+    </div>
+    <div style="background:#F6F2EB;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:24px">
+      <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:30px">Spacing and radius</h2>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ space }}" as="s" hint-placeholder-count="7">
+          <div style="display:flex;align-items:center;gap:16px"><span style="width:80px;font-family:'JetBrains Mono',monospace;font-size:12px">{{ s.name }}</span><span style="height:12px;width:{{ s.w }};background:#A93A22;border-radius:2px"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6158">{{ s.px }}</span></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <sc-for list="{{ radii }}" as="r" hint-placeholder-count="5">
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><span style="width:64px;height:64px;border:1.5px solid #221C17;border-radius:{{ r.v }}"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px">{{ r.name }}</span></div>
+        </sc-for>
+      </div>
+      <p style="margin:0;font-size:13px;color:#6B6158">Touch targets 44 px minimum. Primary buttons 56 px. Inputs 52 px.</p>
+    </div>
+  </section>
+
+  <section style="background:#F6F2EB;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:28px">
+    <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:30px">Components</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6158">Button · primary / secondary / text</span>
+        <button style="min-height:56px;border:none;border-radius:28px;background:#A93A22;color:#fff;font:600 16px 'Instrument Sans'">Start a plan</button>
+        <button style="min-height:48px;border:1px solid #E2D9CC;border-radius:24px;background:transparent;font:500 14px 'Instrument Sans';color:#221C17">+ Add function</button>
+        <button style="align-self:flex-start;min-height:44px;border:none;background:transparent;font:14px 'Instrument Sans';color:#6B6158;text-decoration:underline">Delete this function</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6158">FunctionCard · default / selected</span>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:16px;border:1px solid #E2D9CC;border-radius:16px;background:#FFFDF9">
+          <div style="display:flex;align-items:baseline;gap:10px"><span style="width:10px;height:10px;border-radius:50%;background:oklch(0.62 0.13 140)"></span><span style="flex:1;font-family:'Newsreader',serif;font-size:23px">Mehendi</span><span style="font-weight:600">6 of 9</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6158"><span>Tue, Jun 23 · Afternoon</span><span style="color:#A93A22;font-weight:500">3 missing</span></div>
+          <div style="display:flex;gap:6px"><sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="6"><span style="width:40px;height:52px;border-radius:6px;background:{{ t.bg }}"></span></sc-for><span style="width:40px;height:52px;border-radius:6px;border:1.5px dashed #E2D9CC"></span></div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:10px;padding:16px;border:1px solid #A93A22;box-shadow:0 0 0 1px #A93A22;border-radius:16px;background:#FFFDF9"><span style="width:10px;height:10px;border-radius:50%;background:oklch(0.62 0.13 350)"></span><span style="flex:1;font-family:'Newsreader',serif;font-size:23px">Sangeet</span><span style="font-weight:600">9 of 9</span></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6158">SlotRow · check mark states</span>
+        <div style="display:flex;flex-direction:column;border-top:1px solid #E2D9CC">
+          <div style="display:flex;align-items:center;gap:12px;min-height:48px;border-bottom:1px solid #E2D9CC"><span style="width:22px;height:22px;border-radius:50%;background:#A93A22;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">✓</span><span style="flex:1;font-weight:600">Main outfit</span><span style="font-size:13px;color:#6B6158">Picked</span></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:48px;border-bottom:1px solid #E2D9CC"><span style="width:22px;height:22px;border-radius:50%;border:1.5px solid #A93A22"></span><span style="flex:1;font-weight:600">Bangles and hand jewelry</span><span style="font-size:13px;color:#A93A22">2 to choose from</span></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:48px;border-bottom:1px solid #E2D9CC"><span style="width:22px;height:22px;border-radius:50%;border:1.5px dashed #A93A22"></span><span style="flex:1;font-weight:600">Bag or clutch</span><span style="font-size:13px;color:#A93A22">Missing</span></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:48px;border-bottom:1px solid #E2D9CC"><span style="width:22px;height:22px;border-radius:50%;border:1.5px dashed #E2D9CC"></span><span style="flex:1;font-weight:600">Makeup</span><span style="font-size:13px;color:#6B6158">Optional</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6158">CandidateTile · picked / alternative / broken / add</span>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="position:relative;width:96px;height:120px;border-radius:10px;background:{{ s1 }};outline:2px solid #A93A22;outline-offset:2px"><span style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:#A93A22;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center">✓</span></div>
+          <div style="width:96px;height:120px;border-radius:10px;background:{{ s2 }};opacity:.72"></div>
+          <div style="width:96px;height:120px;border-radius:10px;background:#EEE7DC;padding:8px;display:flex;flex-direction:column;justify-content:center;gap:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#6B6158;text-transform:uppercase">Image didn't load</span><span style="font-family:'Newsreader',serif;font-size:14px">Kundan choker</span></div>
+          <div style="width:96px;height:120px;border-radius:10px;border:1.5px dashed #A93A22;color:#A93A22;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px"><span style="font-size:22px">+</span>Add</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6158">StatusChip · tap cycles Idea → Packed</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ statuses }}" as="s" hint-placeholder-count="6">
+            <span style="display:flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:13px;border:1px solid #E2D9CC;background:#FFFDF9;font-size:12px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:{{ s.dot }}"></span>{{ s.name }}</span>
+          </sc-for>
+        </div>
+        <span style="font-size:13px;color:#6B6158">Accent dot means action pending. Ink dot means done. Hit area is 44 px around the chip.</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6158">Toast · with undo (6 s) / info (2.6 s)</span>
+        <div style="display:flex;align-items:center;gap:12px;padding:6px 6px 6px 18px;border-radius:14px;background:#221C17;color:#F6F2EB"><span style="flex:1;font-size:14px">Plan deleted</span><span style="padding:12px 16px;font-weight:600;text-decoration:underline">Undo</span></div>
+        <div style="display:flex;align-items:center;padding:18px;border-radius:14px;background:#221C17;color:#F6F2EB;font-size:14px">Saved to Mehendi, Footwear</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;border-top:1px solid #E2D9CC;padding-top:24px">
+      <sc-for list="{{ inventory }}" as="c" hint-placeholder-count="9">
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">{{ c.name }}</span><span style="font-size:13px;color:#6B6158">{{ c.notes }}</span></div>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const st = (h, a, b) => `repeating-linear-gradient(135deg, oklch(${a} 0.035 ${h}) 0 7px, oklch(${b} 0.05 ${h}) 7px 14px)`;
+    return {
+      light: [['--bg','#F6F2EB'],['--surface','#FFFDF9'],['--soft','#EEE7DC'],['--line','#E2D9CC'],['--ink','#221C17'],['--muted','#6B6158'],['--accent','#A93A22'],['--accent-ink','#FFFFFF']].map(([name, hex]) => ({ name, hex })),
+      dark: [['--bg','#161311'],['--surface','#1F1B18'],['--soft','#2A2420'],['--line','#36302A'],['--ink','#F1ECE4'],['--muted','#A99F93'],['--accent','#E36B4E'],['--accent-ink','#1A0F0B']].map(([name, hex]) => ({ name, hex })),
+      space: [4, 8, 12, 16, 20, 24, 32].map((n, i) => ({ name: '--s-' + (i + 1), px: n + 'px', w: n * 6 + 'px' })),
+      radii: [['6 thumb','6px'],['10 tile','10px'],['12 input','12px'],['16 card','16px'],['pill','999px']].map(([name, v]) => ({ name, v })),
+      thumbs: [150, 145, 90, 80, 30, 160].map(h => ({ bg: st(h, 0.9, 0.86) })),
+      s1: st(150, 0.9, 0.86), s2: st(130, 0.9, 0.86),
+      statuses: [['Idea','#E2D9CC'],['To buy','#A93A22'],['Ordered','#A93A22'],['At tailor','#A93A22'],['Ready','#221C17'],['Packed','#221C17']].map(([name, dot]) => ({ name, dot })),
+      inventory: [
+        ['TopBar', 'Wordmark (home), plan switcher, theme toggle. Sticky, 60 px.'],
+        ['PlanHeader', 'Owner and preset eyebrow, serif title, place, dates, total picked.'],
+        ['FunctionCard', 'Default, selected (desktop), complete, empty plan.'],
+        ['FunctionHeader', 'Editable name, four field grid: date, time, dress code, venue.'],
+        ['SlotRow', 'Picked, candidates without pick, missing, optional.'],
+        ['CandidateTile', 'Picked, alternative (72% opacity), broken image, add tile with hint.'],
+        ['AddItemSheet', 'Bottom sheet on phone, 440 px side panel at 900 px and up. Last used function and slot preselected.'],
+        ['TemplateRow / PresetSegment / FunctionCheck', 'Setup flow controls. Checkbox rows are 52 px.'],
+        ['Toast', 'Undo variant for every destructive action.']
+      ].map(([name, notes]) => ({ name, notes }))
+    };
+  }
+}
+</script>
+</body>
+</html>

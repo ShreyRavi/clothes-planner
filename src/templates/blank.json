@@ -1,0 +1,8 @@
+{
+  "id": "blank",
+  "name": "Blank",
+  "description": "Start empty and add your own functions",
+  "order": 5,
+  "functions": [],
+  "optional": []
+}

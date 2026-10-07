@@ -1,0 +1,16 @@
+{
+  "id": "wedding-weekend",
+  "name": "Wedding weekend",
+  "description": "Welcome drinks, ceremony, reception, brunch",
+  "order": 2,
+  "functions": [
+    { "name": "Welcome drinks", "timeOfDay": "Evening", "dressCode": "Smart casual" },
+    { "name": "Ceremony", "timeOfDay": "Afternoon", "dressCode": "Formal" },
+    { "name": "Reception", "timeOfDay": "Evening", "dressCode": "Black tie" },
+    { "name": "Brunch", "timeOfDay": "Morning", "dressCode": "Relaxed" }
+  ],
+  "optional": [
+    { "name": "Rehearsal dinner", "timeOfDay": "Evening", "dressCode": "" },
+    { "name": "After party", "timeOfDay": "Night", "dressCode": "" }
+  ]
+}

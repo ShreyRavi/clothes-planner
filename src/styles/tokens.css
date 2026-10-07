@@ -1,0 +1,68 @@
+/* Design tokens from design/Trousseau Handoff.dc.html. DESIGN.md is the readable
+   source; scripts/check-tokens.mjs keeps the two in step. */
+:root {
+  --bg: #F6F2EB;
+  --surface: #FFFDF9;
+  --soft: #EEE7DC;
+  --line: #E2D9CC;
+  --ink: #221C17;
+  --muted: #6B6158;
+  --accent: #A93A22;
+  --accent-ink: #FFFFFF;
+  --scrim: rgba(34, 28, 23, 0.42);
+  --alert-bg: #F3D9D2;
+
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+
+  --r-thumb: 6px;
+  --r-tile: 10px;
+  --r-input: 12px;
+  --r-card: 16px;
+  --r-pill: 999px;
+
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-panel: 240ms;
+  --dur-quick: 160ms;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #161311;
+  --surface: #1F1B18;
+  --soft: #2A2420;
+  --line: #36302A;
+  --ink: #F1ECE4;
+  --muted: #A99F93;
+  --accent: #E36B4E;
+  --accent-ink: #1A0F0B;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --alert-bg: #3A1F18;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #161311;
+    --surface: #1F1B18;
+    --soft: #2A2420;
+    --line: #36302A;
+    --ink: #F1ECE4;
+    --muted: #A99F93;
+    --accent: #E36B4E;
+    --accent-ink: #1A0F0B;
+    --scrim: rgba(0, 0, 0, 0.6);
+    --alert-bg: #3A1F18;
+    color-scheme: dark;
+  }
+}

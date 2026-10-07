@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F2EB;--surface:#FFFDF9;--soft:#EEE7DC;--ink:#221C17;--muted:#6B6158;--line:#E2D9CC;--accent:#A93A22;--accent-ink:#FFFFFF;--scrim:rgba(34,28,23,.42)}
+[data-theme=dark]{--bg:#161311;--surface:#1F1B18;--soft:#2A2420;--ink:#F1ECE4;--muted:#A99F93;--line:#36302A;--accent:#E36B4E;--accent-ink:#1A0F0B;--scrim:rgba(0,0,0,.6)}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+a:hover{color:var(--ink)}
+input::placeholder{color:var(--muted);opacity:.8}
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Instrument Sans',system-ui,sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:640px;margin:0 auto;padding:12px 20px 80px;display:flex;flex-direction:column;gap:36px">
+  <div style="display:flex;align-items:center;justify-content:space-between;height:52px">
+    <span style="font-family:'Newsreader',serif;font-style:italic;font-size:24px">Trousseau</span>
+    <button onClick="{{ toggleTheme }}" style="min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:22px;background:transparent;cursor:pointer;font-size:13px">{{ themeLabel }}</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;padding-top:12px">
+    <h1 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:42px;line-height:1.05;letter-spacing:-0.01em;text-wrap:balance">Every outfit, for every function, in one place.</h1>
+    <p style="margin:0;color:var(--muted);font-size:16px;max-width:440px;text-wrap:pretty">No account needed. Plans save on this device and share as a single link.</p>
+  </div>
+  <button onClick="{{ startPlan }}" style="min-height:56px;border:none;border-radius:28px;background:var(--accent);color:var(--accent-ink);font-size:16px;font-weight:600;cursor:pointer">Start a plan</button>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <h2 style="margin:0;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Or start from a template</h2>
+    <div style="display:flex;flex-direction:column;border-top:1px solid var(--line)">
+      <sc-for list="{{ templates }}" as="t" hint-placeholder-count="5">
+        <button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:12px;min-height:64px;padding:12px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;text-align:left;cursor:pointer">
+          <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0">
+            <span style="font-family:'Newsreader',serif;font-size:20px">{{ t.name }}</span>
+            <span style="font-size:13px;color:var(--muted)">{{ t.desc }}</span>
+          </span>
+          <span style="color:var(--muted);font-size:20px">›</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{ hasPlans }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <h2 style="margin:0;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Your plans on this device</h2>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ planRows }}" as="p" hint-placeholder-count="2">
+          <div style="display:flex;align-items:stretch;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+            <button onClick="{{ p.open }}" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:14px 16px;border:none;background:transparent;text-align:left;cursor:pointer">
+              <span style="font-family:'Newsreader',serif;font-size:20px">{{ p.title }}</span>
+              <span style="font-size:13px;color:var(--muted)">{{ p.sub }}</span>
+            </button>
+            <button onClick="{{ p.del }}" aria-label="{{ p.delLabel }}" style="width:52px;border:none;border-left:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;font-size:13px">Delete</button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSetup }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:640px;margin:0 auto;padding:12px 20px 120px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:center;justify-content:space-between;height:52px">
+    <button onClick="{{ goHome }}" style="min-height:44px;padding:0 4px;border:none;background:transparent;cursor:pointer;font-size:15px">‹ Back</button>
+    <span style="font-family:'Newsreader',serif;font-style:italic;font-size:20px">Trousseau</span>
+    <span style="width:52px"></span>
+  </div>
+  <h1 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:38px;line-height:1.1">New plan</h1>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Template</span>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ tplChips }}" as="c" hint-placeholder-count="5">
+        <button onClick="{{ c.onClick }}" aria-pressed="{{ c.on }}" style="min-height:44px;padding:0 16px;border-radius:22px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};cursor:pointer;font-size:14px">{{ c.name }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <label style="display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Whose plan is this</span>
+    <input value="{{ setupOwner }}" onChange="{{ onOwner }}" placeholder="Your name" style="min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:16px;outline-color:var(--accent)">
+  </label>
+  <label style="display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Event</span>
+    <input value="{{ setupTitle }}" onChange="{{ onTitle }}" placeholder="e.g. Riya and Kabir's wedding" style="min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:16px;outline-color:var(--accent)">
+    <input value="{{ setupPlace }}" onChange="{{ onPlace }}" placeholder="Where and when, e.g. Udaipur, Dec 12 to 15" style="min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:16px;outline-color:var(--accent)">
+  </label>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Slots for each outfit</span>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden">
+      <sc-for list="{{ presetBtns }}" as="b" hint-placeholder-count="3">
+        <button onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="min-height:48px;border:none;background:{{ b.bg }};color:{{ b.color }};cursor:pointer;font-size:14px;font-weight:500">{{ b.label }}</button>
+      </sc-for>
+    </div>
+    <p style="margin:0;font-size:13px;color:var(--muted);text-wrap:pretty">{{ presetDesc }}</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Functions</span>
+    <div style="display:flex;flex-direction:column;border-top:1px solid var(--line)">
+      <sc-for list="{{ setupFns }}" as="f" hint-placeholder-count="5">
+        <button onClick="{{ f.onToggle }}" role="checkbox" aria-checked="{{ f.on }}" style="display:flex;align-items:center;gap:14px;min-height:52px;padding:0 2px;border:none;border-bottom:1px solid var(--line);background:transparent;text-align:left;cursor:pointer">
+          <span style="width:22px;height:22px;border-radius:6px;border:1.5px solid {{ f.boxBorder }};background:{{ f.boxBg }};color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">{{ f.mark }}</span>
+          <span style="flex:1;font-size:16px">{{ f.name }}</span>
+          <span style="font-size:13px;color:var(--muted)">{{ f.note }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <sc-if value="{{ hasOpt }}" hint-placeholder-val="{{ true }}">
+      <span style="margin-top:14px;font-size:13px;color:var(--muted)">Add any of these if they're happening</span>
+      <div style="display:flex;flex-direction:column;border-top:1px solid var(--line)">
+        <sc-for list="{{ setupOpt }}" as="f" hint-placeholder-count="4">
+          <button onClick="{{ f.onToggle }}" role="checkbox" aria-checked="{{ f.on }}" style="display:flex;align-items:center;gap:14px;min-height:52px;padding:0 2px;border:none;border-bottom:1px solid var(--line);background:transparent;text-align:left;cursor:pointer">
+            <span style="width:22px;height:22px;border-radius:6px;border:1.5px solid {{ f.boxBorder }};background:{{ f.boxBg }};color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">{{ f.mark }}</span>
+            <span style="flex:1;font-size:16px">{{ f.name }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+  <div style="position:sticky;bottom:0;padding:16px 0 20px;background:linear-gradient(to top,var(--bg) 70%,transparent)">
+    <button onClick="{{ createPlan }}" style="width:100%;min-height:56px;border:none;border-radius:28px;background:var(--accent);color:var(--accent-ink);font-size:16px;font-weight:600;cursor:pointer">{{ createLabel }}</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPlan }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;min-height:100vh">
+  <div style="position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;height:60px;padding:0 16px;background:var(--bg);border-bottom:1px solid var(--line)">
+    <button onClick="{{ goHome }}" aria-label="Home" style="min-height:44px;padding:0 4px;border:none;background:transparent;cursor:pointer;font-family:'Newsreader',serif;font-style:italic;font-size:22px">Trousseau</button>
+    <span style="flex:1"></span>
+    <select value="{{ currentId }}" onChange="{{ onSwitch }}" aria-label="Switch plan" style="min-height:44px;max-width:180px;padding:0 12px;border:1px solid var(--line);border-radius:22px;background:var(--surface);font-size:14px;cursor:pointer">
+      <sc-for list="{{ switchOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.id }}">{{ o.label }}</option></sc-for>
+    </select>
+    <button onClick="{{ toggleTheme }}" style="min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:22px;background:transparent;cursor:pointer;font-size:13px">{{ themeLabel }}</button>
+  </div>
+  <div style="flex:1;display:flex;width:100%;max-width:1320px;margin:0 auto">
+    <sc-if value="{{ showOverview }}" hint-placeholder-val="{{ true }}">
+      <div style="width:{{ ovWidth }};max-width:{{ ovMax }};margin:{{ ovMargin }};flex-shrink:0;height:{{ paneH }};overflow-y:{{ paneOv }};border-right:{{ ovBorder }};padding:24px 16px 120px;display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:6px;padding:0 4px">
+          <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">{{ planEyebrow }}</span>
+          <h1 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:34px;line-height:1.1;text-wrap:balance">{{ planTitle }}</h1>
+          <span style="font-size:14px;color:var(--muted)">{{ planMeta }}</span>
+        </div>
+        <sc-if value="{{ hasFns }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ cards }}" as="c" hint-placeholder-count="5">
+              <button onClick="{{ c.open }}" aria-current="{{ c.sel }}" style="display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid {{ c.border }};box-shadow:{{ c.shadow }};border-radius:16px;background:var(--surface);text-align:left;cursor:pointer;width:100%">
+                <span style="display:flex;align-items:baseline;gap:10px;width:100%">
+                  <span style="width:10px;height:10px;border-radius:50%;background:{{ c.swatch }};flex-shrink:0;transform:translateY(-2px)"></span>
+                  <span style="flex:1;min-width:0;font-family:'Newsreader',serif;font-size:23px;line-height:1.15">{{ c.name }}</span>
+                  <span style="font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ c.count }}</span>
+                </span>
+                <span style="display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);margin-top:-6px">
+                  <span>{{ c.when }}</span>
+                  <span style="color:{{ c.mColor }};font-weight:500;white-space:nowrap">{{ c.missingLabel }}</span>
+                </span>
+                <span style="display:flex;gap:6px;overflow:hidden">
+                  <sc-for list="{{ c.thumbs }}" as="th" hint-placeholder-count="5">
+                    <span style="width:40px;height:52px;flex:0 0 40px;border-radius:6px;background:{{ th.bg }}"></span>
+                  </sc-for>
+                  <sc-for list="{{ c.gaps }}" as="g" hint-placeholder-count="2">
+                    <span style="width:40px;height:52px;flex:0 0 40px;border-radius:6px;border:1.5px dashed var(--line)"></span>
+                  </sc-for>
+                </span>
+                <span style="font-size:13px;color:var(--muted);font-style:italic;font-family:'Newsreader',serif">{{ c.dress }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noFns }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:28px 20px;border:1.5px dashed var(--line);border-radius:16px;text-align:center">
+            <span style="font-family:'Newsreader',serif;font-size:22px">No functions yet</span>
+            <span style="font-size:14px;color:var(--muted)">Add one for each occasion you're dressing for.</span>
+          </div>
+        </sc-if>
+        <button onClick="{{ addFunction }}" style="min-height:48px;border:1px solid var(--line);border-radius:24px;background:transparent;cursor:pointer;font-size:14px;font-weight:500">+ Add function</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;min-width:0;height:{{ paneH }};overflow-y:{{ paneOv }};padding:16px 0 140px">
+        <div style="max-width:760px;margin:0 auto;padding:0 16px;display:flex;flex-direction:column;gap:20px">
+          <sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ backToOverview }}" style="align-self:flex-start;min-height:44px;padding:0 4px;border:none;background:transparent;cursor:pointer;font-size:15px">‹ All functions</button>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:14px;padding-top:8px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="width:14px;height:14px;border-radius:50%;background:{{ fnSwatch }};flex-shrink:0"></span>
+              <input value="{{ fnName }}" onChange="{{ onFnName }}" aria-label="Function name" style="flex:1;min-width:0;border:none;background:transparent;font-family:'Newsreader',serif;font-size:38px;line-height:1.1;padding:0;outline-color:var(--accent)">
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+              <sc-for list="{{ fnFields }}" as="ff" hint-placeholder-count="4">
+                <label style="display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:var(--surface)">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">{{ ff.label }}</span>
+                  <input value="{{ ff.value }}" onChange="{{ ff.onChange }}" placeholder="{{ ff.ph }}" style="border:none;background:transparent;padding:2px 0;min-height:28px;font-size:15px;outline-color:var(--accent)">
+                </label>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:12px">
+              <span style="font-size:15px;font-weight:600">{{ fnCount }}</span>
+              <span style="font-size:14px;color:{{ fnMissColor }}">{{ fnMissing }}</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;border-top:1px solid var(--line)">
+            <sc-for list="{{ slots }}" as="s" hint-placeholder-count="6">
+              <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span style="width:22px;height:22px;border-radius:50%;flex-shrink:0;border:1.5px {{ s.markStyle }} {{ s.markBorder }};background:{{ s.markBg }};color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">{{ s.mark }}</span>
+                  <span style="flex:1;min-width:0;font-size:16px;font-weight:600">{{ s.name }}</span>
+                  <span style="font-size:13px;color:{{ s.statusColor }};font-weight:500;white-space:nowrap">{{ s.status }}</span>
+                </div>
+                <div style="display:flex;gap:10px;overflow-x:auto;padding:2px 2px 4px 34px;scrollbar-width:none">
+                  <sc-for list="{{ s.tiles }}" as="t" hint-placeholder-count="2">
+                    <div style="flex:0 0 112px;width:112px;display:flex;flex-direction:column;gap:6px">
+                      <button onClick="{{ t.onPick }}" aria-pressed="{{ t.picked }}" aria-label="{{ t.aria }}" style="position:relative;width:112px;height:140px;padding:0;border:none;border-radius:10px;cursor:pointer;background:{{ t.bg }};outline:{{ t.outline }};outline-offset:2px;overflow:hidden;opacity:{{ t.opacity }}">
+                        <sc-if value="{{ t.ok }}" hint-placeholder-val="{{ true }}">
+                          <span style="position:absolute;left:6px;bottom:6px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--surface);color:var(--muted);padding:2px 5px;border-radius:4px">{{ t.label }}</span>
+                        </sc-if>
+                        <sc-if value="{{ t.broken }}" hint-placeholder-val="{{ false }}">
+                          <span style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:10px;text-align:left">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Image didn't load</span>
+                            <span style="font-family:'Newsreader',serif;font-size:15px;line-height:1.2">{{ t.title }}</span>
+                          </span>
+                        </sc-if>
+                        <sc-if value="{{ t.picked }}" hint-placeholder-val="{{ false }}">
+                          <span style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</span>
+                        </sc-if>
+                      </button>
+                      <span style="font-size:13px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ t.title }}</span>
+                      <sc-if value="{{ t.ok }}" hint-placeholder-val="{{ true }}">
+                        <span style="font-size:12px;color:var(--muted);line-height:1.3;margin-top:-4px">{{ t.meta }}</span>
+                      </sc-if>
+                      <sc-if value="{{ t.broken }}" hint-placeholder-val="{{ false }}">
+                        <a href="{{ t.link }}" target="_blank" rel="noopener" style="font-size:12px;margin-top:-4px">{{ t.domain }}</a>
+                      </sc-if>
+                      <sc-if value="{{ t.picked }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ t.onStatus }}" aria-label="{{ t.statusAria }}" style="align-self:flex-start;min-height:44px;margin:-8px 0 -8px -4px;padding:0 4px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center">
+                          <span style="display:flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:13px;border:1px solid var(--line);background:var(--surface);font-size:12px;font-weight:500">
+                            <span style="width:6px;height:6px;border-radius:50%;background:{{ t.statusDot }}"></span>{{ t.status }}
+                          </span>
+                        </button>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                  <button onClick="{{ s.onAdd }}" aria-label="{{ s.addAria }}" style="flex:0 0 112px;width:112px;height:140px;border:1.5px dashed {{ s.addBorder }};border-radius:10px;background:transparent;color:{{ s.addColor }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;cursor:pointer;text-align:center">
+                    <span style="font-size:24px;line-height:1">+</span>
+                    <span style="font-size:13px;font-weight:500">{{ s.addLabel }}</span>
+                    <span style="font-size:11.5px;color:var(--muted);font-family:'Newsreader',serif;font-style:italic;line-height:1.25">{{ s.hint }}</span>
+                  </button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ deleteFn }}" style="align-self:flex-start;min-height:44px;padding:0 4px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;text-decoration:underline;text-underline-offset:3px">Delete this function</button>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+  <sc-if value="{{ hasFns }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ openCapture }}" aria-label="Add an item" style="position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:20;width:60px;height:60px;border-radius:50%;border:none;background:var(--accent);color:var(--accent-ink);font-size:30px;font-weight:300;line-height:1;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18)">+</button>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasSheet }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeSheet }}" style="position:fixed;inset:0;z-index:40;background:var(--scrim)"></div>
+  <div role="dialog" aria-label="Add an item" style="position:fixed;z-index:41;left:{{ sp.left }};right:0;bottom:0;top:{{ sp.top }};width:{{ sp.width }};max-height:{{ sp.maxH }};border-radius:{{ sp.radius }};background:var(--bg);overflow-y:auto;padding:12px 20px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:18px">
+    <span style="align-self:center;width:40px;height:4px;border-radius:2px;background:var(--line)"></span>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:28px">Add an item</h2>
+      <button onClick="{{ closeSheet }}" style="min-height:44px;padding:0 4px;border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:14px">Cancel</button>
+    </div>
+    <label style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Link</span>
+      <input value="{{ sheetLink }}" onChange="{{ onSheetLink }}" placeholder="Paste a product link" inputmode="url" style="min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:16px;outline-color:var(--accent)">
+    </label>
+    <label style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Title</span>
+      <input value="{{ sheetTitle }}" onChange="{{ onSheetTitle }}" placeholder="e.g. Gold juttis" style="min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:16px;outline-color:var(--accent)">
+    </label>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Price</span>
+      <div style="display:flex;gap:8px">
+        <button onClick="{{ toggleCur }}" aria-label="Change currency" style="width:56px;min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;font-size:16px">{{ sheetCur }}</button>
+        <input value="{{ sheetPrice }}" onChange="{{ onSheetPrice }}" placeholder="Optional" inputmode="decimal" style="flex:1;min-width:0;min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:16px;outline-color:var(--accent)">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px">
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Function</span>
+        <select value="{{ sheetFid }}" onChange="{{ onSheetFn }}" style="min-height:52px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:15px">
+          <sc-for list="{{ fnOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+        </select>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Slot</span>
+        <select value="{{ sheetSid }}" onChange="{{ onSheetSlot }}" style="min-height:52px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:15px">
+          <sc-for list="{{ slotOpts }}" as="o" hint-placeholder-count="9"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+        </select>
+      </label>
+    </div>
+    <button onClick="{{ saveItem }}" style="min-height:56px;border:none;border-radius:28px;background:var(--accent);color:var(--accent-ink);font-size:16px;font-weight:600;cursor:pointer;opacity:{{ saveOpacity }}">Save</button>
+    <span style="font-size:13px;color:var(--muted);text-align:center">Tip: paste a link anywhere in the app to start here.</span>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div role="status" style="position:fixed;z-index:60;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom));width:calc(100% - 32px);max-width:420px;display:flex;align-items:center;gap:12px;padding:6px 6px 6px 18px;border-radius:14px;background:var(--ink);color:var(--bg);box-shadow:0 8px 24px rgba(0,0,0,.2)">
+    <span style="flex:1;font-size:14px">{{ toastMsg }}</span>
+    <sc-if value="{{ toastUndo }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ undo }}" style="min-height:44px;padding:0 16px;border:none;border-radius:10px;background:transparent;color:var(--bg);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Undo</button>
+    </sc-if>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const LS = 'trousseau:v1';
+const uid = () => Math.random().toString(36).slice(2, 9);
+const STATUSES = ['Idea', 'To buy', 'Ordered', 'At tailor', 'Ready', 'Packed'];
+const W = [['Main outfit','lehenga, saree, anarkali'],['Blouse or top','stitched blouse, crop top'],['Dupatta or drape','dupatta, cape, pallu'],['Footwear','juttis, block heels'],['Necklace','choker, rani haar'],['Earrings','jhumkas, chandbalis'],['Bangles and hand jewelry','kadas, haathphool'],['Hair jewelry','maang tikka, passa'],['Bag or clutch','potli, clutch'],['Hair','',1],['Makeup','',1],['Innerwear and shapewear','',1],['Tailoring and alterations','',1]];
+const M = [['Main outfit','sherwani, kurta, bandhgala'],['Bottoms','churidar, dhoti, trousers'],['Jacket or layer','Nehru jacket, waistcoat'],['Footwear','mojaris, juttis'],['Safa or turban','safa, pagdi'],['Stole or dupatta','silk stole'],['Accessories','brooch, mala, pocket square'],['Grooming','',1],['Innerwear','',1],['Tailoring and alterations','',1]];
+const C = [['Outfit','dress, suit, set'],['Layer','jacket, wrap'],['Footwear','shoes, sandals'],['Accessories','',1]];
+const PRESETS = { women: { label: "Women's", slots: W }, men: { label: "Men's", slots: M }, custom: { label: 'Custom', slots: C } };
+const TPL = {
+  indian: { name: 'Indian wedding', fns: [['Mehendi','Afternoon','Greens and florals',140],['Haldi','Morning','Yellow, nothing precious',95],['Sangeet','Evening','Glam, dance-ready',350],['Wedding ceremony','Morning','Traditional, jewel tones',28],['Reception','Evening','Indo-western black tie',265]], opt: ['Roka or engagement','Welcome dinner','Cocktail night','Baraat','Vidaai','Travel days'] },
+  weekend: { name: 'Wedding weekend', fns: [['Welcome drinks','Evening','Smart casual',60],['Ceremony','Afternoon','Formal',200],['Reception','Evening','Black tie',280],['Brunch','Morning','Relaxed',110]], opt: ['Rehearsal dinner','After party'] },
+  conference: { name: 'Conference', fns: [['Day 1','Morning','Business casual',230],['Day 2','Morning','Business casual',200],['Day 3','Morning','Smart casual',170],['Speaker dinner','Evening','Cocktail',30]], opt: ['Travel day','Closing party'] },
+  festival: { name: 'Festival', fns: [['Day 1','All day','Comfortable, layered',50],['Day 2','All day','Bold',320],['Day 3','All day','Easy',150]], opt: ['Travel days','Camp nights'] },
+  blank: { name: 'Blank', fns: [], opt: [] }
+};
+const OPT_HUE = [10, 45, 190, 300, 120, 240];
+const FN_META = [['Mehendi','Tue, Jun 23','Afternoon','Greens and florals','Villa garden, on grass',140],['Haldi','Wed, Jun 24','Morning','Yellow, nothing precious','Poolside terrace',95],['Sangeet','Wed, Jun 24','Evening','Glam, dance-ready','Palazzo ballroom',350],['Wedding ceremony','Thu, Jun 25','Morning','Traditional, jewel tones','Villa lawn, mandap',28],['Reception','Fri, Jun 26','Evening','Indo-western black tie','Palazzo courtyard',265]];
+const E_ITEMS = [
+  [[0,'Mint chikankari anarkali','Ritu Kumar',38500,'₹','Ordered',1],[0,'Sage organza lehenga','Kalki Fashion',52000,'₹','Idea',0],[1,'Mirror-work halter blouse','Meena Tailors',4500,'₹','At tailor',1],[2,'Pale gold tissue dupatta','Aza',8900,'₹','Ready',1],[3,'Gold kolhapuris','Fizzy Goblet',2890,'₹','Packed',1],[3,'Embroidered block heels','Needledust',6200,'₹','Idea',0],[4,'Kundan choker','pinterest.com',0,'₹','Idea',0,1],[5,'Floral jhumkas','Amrapali',11500,'₹','To buy',1],[6,'Pearl haathphool','Jaipur Jewels on Etsy',48,'$','To buy',1]],
+  [[0,'Yellow cotton sharara set','Fabindia',6400,'₹','Ready',1],[2,'Mulmul dupatta','Fabindia',1800,'₹','Idea',0],[3,'Old kolhapuris','Own closet',0,'₹','Packed',1],[5,'Gota patti earrings','Sarafa Bazaar',1200,'₹','To buy',1]],
+  [[0,'Fuchsia sequin saree',"Papa Don't Preach",68000,'₹','Ordered',1],[0,'Silver drape gown','Seema Gujral',84000,'₹','Idea',0],[1,'Sequin bralette blouse',"Papa Don't Preach",0,'₹','At tailor',1],[2,'Attached pallu','Comes with saree',0,'₹','Ready',1],[3,'Silver platform heels','Steve Madden',89,'$','Ready',1],[4,'Crystal collar','Outhouse',14000,'₹','To buy',1],[5,'Statement studs','Outhouse',6500,'₹','To buy',1],[6,'Silver cuff','Own closet',0,'₹','Packed',1],[7,'Crystal hair pins','Accessorize',24,'$','Idea',1],[8,'Mirror potli','Lovetobag',3200,'₹','Ordered',1]],
+  [[0,'Rust silk lehenga','Aza',124000,'₹','Ordered',1],[0,'Maroon Kanjeevaram saree','Nalli',42000,'₹','Idea',0],[1,'Zardozi blouse','Meena Tailors',7500,'₹','At tailor',1],[2,'Scalloped net dupatta','Aza',0,'₹','Ordered',1],[3,'Gold juttis','Fizzy Goblet',3400,'₹','Packed',1],[4,'Polki rani haar',"Mom's collection",0,'₹','Ready',1],[5,'Polki chandbalis',"Mom's collection",0,'₹','Ready',1],[6,'Red and gold chooda','Chandni Chowk',2200,'₹','Idea',0],[6,'Gold kadas','Tanishq',58000,'₹','Idea',0],[7,'Polki maang tikka','Amrapali',18500,'₹','Ready',1]],
+  [[0,'Midnight blue cape gown',"Pernia's Pop-Up",72000,'₹','To buy',1],[0,'Black drape saree','Amit Aggarwal',95000,'₹','Idea',0],[3,'Strappy gold heels','Nordstrom',165,'$','Idea',1],[5,'Emerald drops','Flyrobe rental',4000,'₹','To buy',1]]
+];
+const Y_ITEMS = [
+  [[0,'Olive linen kurta','Fabindia',3900,'₹','Ready',1],[0,'Printed silk kurta','Tasva',7999,'₹','Idea',0],[1,'Off-white churidar','Fabindia',1490,'₹','Ready',1],[2,'Block-print Nehru jacket','Manyavar',5499,'₹','Ordered',1],[3,'Tan mojaris','Needledust',5800,'₹','Packed',1],[6,'Rudraksha mala','Own closet',0,'₹','Idea',1]],
+  [[0,'White chikan kurta','Lucknow Chikan House',2600,'₹','Ready',1],[1,'White pajama','Fabindia',990,'₹','Ready',1],[3,'Old kolhapuris','Own closet',0,'₹','Packed',1]],
+  [[0,'Black velvet bandhgala','Raghavendra Rathore',65000,'₹','At tailor',1],[1,'Black tapered trousers','Raghavendra Rathore',0,'₹','Ready',1],[3,'Patent loafers','J.Crew',128,'$','Packed',1],[6,'Silver lotus brooch','Etsy',36,'$','To buy',1]],
+  [[0,'Ivory zardozi sherwani','Tarun Tahiliani',145000,'₹','Ordered',1],[0,'Gold raw silk sherwani','Manyavar',28000,'₹','Idea',0],[1,'Ivory churidar','Tarun Tahiliani',0,'₹','At tailor',1],[3,'Embroidered juttis','Fizzy Goblet',3600,'₹','To buy',1],[4,'Rose pink safa','Safa House, Jaipur',2500,'₹','To buy',1],[5,'Pink silk stole','Tasva',3200,'₹','Idea',1],[6,'Kundan brooch and mala','instagram.com',0,'₹','Idea',0,1]],
+  [[0,'Midnight tuxedo','Suitsupply',699,'$','To buy',1],[3,'Black oxfords','Own closet',0,'₹','Packed',1],[6,'Silk pocket square',"Drake's",95,'$','Idea',0]]
+];
+const mkSlots = p => PRESETS[p].slots.map((s, i) => ({ id: 's' + i, name: s[0], hint: s[1], optional: !!s[2] }));
+function samplePlan(owner, preset, rows) {
+  return { id: uid(), title: "E & Y's Sample wedding", owner, preset, place: 'Turin, Italy', dates: 'Jun 23 to 26', slots: mkSlots(preset),
+    functions: FN_META.map((m, fi) => ({ id: uid(), name: m[0], date: m[1], time: m[2], dress: m[3], venue: m[4], hue: m[5],
+      items: rows[fi].map((r, ii) => ({ id: uid(), slot: 's' + r[0], title: r[1], shop: r[2], price: r[3], cur: r[4], status: r[5], picked: !!r[6], broken: !!r[7], link: r[7] ? 'https://' + r[2] + '/pin/4417' : '', hue: m[5] + ((ii * 37) % 60) - 30 })) })) };
+}
+function host(link) { try { return new URL(/^https?:/.test(link) ? link : 'https://' + link).hostname.replace(/^www\./, ''); } catch (e) { return ''; } }
+function siteName(link) { const h = host(link); if (!h || h.indexOf('.') < 0) return ''; const n = h.split('.')[0]; return n.charAt(0).toUpperCase() + n.slice(1); }
+function cleanUrl(link) { try { const u = new URL(/^https?:/.test(link) ? link : 'https://' + link); [...u.searchParams.keys()].forEach(k => { if (/^(utm_|fbclid|gclid|igshid|ref|si$)/.test(k)) u.searchParams.delete(k); }); return u.toString(); } catch (e) { return link; } }
+function fmt(it) { if (!it.price) return ''; return it.cur === '$' ? '$' + it.price.toLocaleString('en-US') : '₹' + it.price.toLocaleString('en-IN'); }
+
+class Component extends DCLogic {
+  state = this.init();
+  init() {
+    let data = null;
+    try { data = JSON.parse(localStorage.getItem(LS)); } catch (e) {}
+    if (!data || !data.plans) {
+      const e = samplePlan('E', 'women', E_ITEMS), y = samplePlan('Y', 'men', Y_ITEMS);
+      data = { v: 1, plans: [e, y], current: e.id, theme: 'light', last: null };
+    }
+    const wide = typeof window !== 'undefined' && window.innerWidth >= 900;
+    return { data, screen: data.current && data.plans.some(p => p.id === data.current) ? 'plan' : 'home', fnId: null, setup: null, sheet: null, toast: null, wide };
+  }
+  componentDidMount() {
+    this.applyTheme();
+    this.save(this.state.data);
+    this.onResize = () => { const w = window.innerWidth >= 900; if (w !== this.state.wide) this.setState({ wide: w }); };
+    window.addEventListener('resize', this.onResize);
+    this.onResize(); requestAnimationFrame(this.onResize);
+    this.onPaste = (e) => {
+      const t = e.target; if (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName)) return;
+      if (this.state.screen !== 'plan' || !this.plan() || !this.plan().functions.length) return;
+      const cd = e.clipboardData; if (!cd) return;
+      const img = [...cd.items].find(i => i.type.startsWith('image/'));
+      if (img) { e.preventDefault(); this.openSheet(null, null, '', 'Pasted image'); return; }
+      const txt = cd.getData('text'); if (txt) { e.preventDefault(); this.openSheet(null, null, txt.trim()); }
+    };
+    document.addEventListener('paste', this.onPaste);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); document.removeEventListener('paste', this.onPaste); clearTimeout(this.tt); }
+  componentDidUpdate() { this.applyTheme(); }
+  applyTheme() { document.documentElement.dataset.theme = this.state.data.theme; }
+  save(data) { try { localStorage.setItem(LS, JSON.stringify(data)); } catch (e) {} }
+  plan(d = this.state.data) { return d.plans.find(p => p.id === d.current); }
+  getFn(d, fid) { return this.plan(d).functions.find(f => f.id === fid); }
+  mut(fn) { this.setState(st => { const data = JSON.parse(JSON.stringify(st.data)); fn(data); this.save(data); return { data }; }); }
+  toast(msg, prev) { clearTimeout(this.tt); this.setState({ toast: { msg, prev } }); this.tt = setTimeout(() => this.setState({ toast: null }), prev ? 6000 : 2600); }
+  destructive(msg, fn) { const prev = this.state.data; this.mut(fn); this.toast(msg, prev); }
+  openSetup(k) {
+    const t = TPL[k], prev = this.state.setup || {}, checks = {};
+    t.fns.forEach(f => checks[f[0]] = true); t.opt.forEach(n => checks[n] = false);
+    this.setState({ screen: 'setup', setup: { tpl: k, owner: prev.owner || '', title: prev.title || '', place: prev.place || '', preset: prev.preset || 'women', checks } });
+    if (!this.state.setup) window.scrollTo(0, 0);
+  }
+  setSetup(patch) { this.setState(s => ({ setup: { ...s.setup, ...patch } })); }
+  createPlan() {
+    const s = this.state.setup, t = TPL[s.tpl];
+    const names = [...t.fns.map(f => f[0]), ...t.opt].filter(n => s.checks[n]);
+    const functions = names.map((n, i) => { const f = t.fns.find(x => x[0] === n); return { id: uid(), name: n, date: '', time: f ? f[1] : '', dress: f ? f[2] : '', venue: '', hue: f ? f[3] : OPT_HUE[i % 6], items: [] }; });
+    const owner = s.owner.trim() || 'Me';
+    const plan = { id: uid(), title: s.title.trim() || t.name + ' plan', owner, preset: s.preset, place: s.place.trim(), dates: '', slots: mkSlots(s.preset), functions };
+    this.mut(d => { d.plans.push(plan); d.current = plan.id; d.last = null; });
+    this.setState({ screen: 'plan', fnId: null, setup: null });
+    window.scrollTo(0, 0);
+  }
+  openSheet(fid, sid, link = '', title = '') {
+    const p = this.plan(), last = this.state.data.last;
+    const valid = id => p.functions.some(f => f.id === id);
+    fid = fid || (last && valid(last.fn) ? last.fn : (valid(this.state.fnId) ? this.state.fnId : p.functions[0].id));
+    sid = sid || (last && last.slot) || p.slots[0].id;
+    this.setState({ sheet: { fid, sid, link, title: title || siteName(link), touched: !!title, price: '', cur: '₹' } });
+  }
+  setSheet(patch) { this.setState(s => ({ sheet: { ...s.sheet, ...patch } })); }
+  saveItem() {
+    const sh = this.state.sheet; if (!sh.title.trim() && !sh.link.trim()) return;
+    const p = this.plan(), f = p.functions.find(x => x.id === sh.fid), sl = p.slots.find(x => x.id === sh.sid);
+    const item = { id: uid(), slot: sh.sid, title: sh.title.trim() || siteName(sh.link) || 'Untitled', shop: host(sh.link) || '', link: sh.link ? cleanUrl(sh.link) : '', price: parseFloat(String(sh.price).replace(/[^0-9.]/g, '')) || 0, cur: sh.cur, status: 'Idea', picked: false, broken: false, hue: f.hue + Math.round(Math.random() * 40 - 20) };
+    this.mut(d => { this.getFn(d, sh.fid).items.push(item); d.last = { fn: sh.fid, slot: sh.sid }; });
+    this.setState({ sheet: null, fnId: sh.fid });
+    this.toast(`Saved to ${f.name}, ${sl.name}`);
+  }
+  renderVals() {
+    const st = this.state, d = st.data, wide = st.wide, dark = d.theme === 'dark';
+    const plan = this.plan();
+    const stripe = h => dark
+      ? `repeating-linear-gradient(135deg, oklch(0.36 0.035 ${h}) 0 7px, oklch(0.32 0.045 ${h}) 7px 14px)`
+      : `repeating-linear-gradient(135deg, oklch(0.9 0.035 ${h}) 0 7px, oklch(0.86 0.05 ${h}) 7px 14px)`;
+    const swatch = h => `oklch(${dark ? 0.7 : 0.62} 0.13 ${h})`;
+    const stats = (p, f) => { const req = p.slots.filter(s => !s.optional); const ps = new Set(f.items.filter(i => i.picked).map(i => i.slot)); const done = req.filter(s => ps.has(s.id)).length; return { done, total: req.length, missing: req.length - done }; };
+    const v = {
+      isHome: st.screen === 'home', isSetup: st.screen === 'setup', isPlan: st.screen === 'plan' && !!plan,
+      themeLabel: dark ? 'Light' : 'Dark',
+      toggleTheme: () => this.mut(dd => { dd.theme = dd.theme === 'dark' ? 'light' : 'dark'; }),
+      goHome: () => { this.setState({ screen: 'home', setup: null }); window.scrollTo(0, 0); },
+      startPlan: () => this.openSetup('indian'),
+      templates: Object.entries(TPL).map(([k, t]) => ({ name: t.name, desc: t.fns.length ? t.fns.map(f => f[0]).join(', ') : 'Start empty and add your own functions', onClick: () => this.openSetup(k) })),
+      hasPlans: d.plans.length > 0,
+      planRows: d.plans.map(p => { const tot = p.functions.reduce((a, f) => { const s = stats(p, f); return [a[0] + s.done, a[1] + s.total]; }, [0, 0]);
+        return { title: p.title, sub: `${p.owner}'s plan · ${PRESETS[p.preset].label} · ${tot[0]} of ${tot[1]} picked`, delLabel: 'Delete ' + p.title,
+          open: () => { this.mut(dd => { dd.current = p.id; }); this.setState({ screen: 'plan', fnId: null }); window.scrollTo(0, 0); },
+          del: () => this.destructive('Plan deleted', dd => { dd.plans = dd.plans.filter(x => x.id !== p.id); if (dd.current === p.id) dd.current = dd.plans[0] ? dd.plans[0].id : null; }) }; }),
+      hasSheet: !!st.sheet && !!plan, hasToast: !!st.toast,
+      toastMsg: st.toast ? st.toast.msg : '', toastUndo: !!(st.toast && st.toast.prev),
+      undo: () => { const prev = st.toast.prev; this.save(prev); clearTimeout(this.tt); this.setState({ data: prev, toast: null }); }
+    };
+    if (st.setup) {
+      const s = st.setup, t = TPL[s.tpl];
+      const row = n => ({ name: n, on: !!s.checks[n], mark: s.checks[n] ? '✓' : '', boxBg: s.checks[n] ? 'var(--accent)' : 'transparent', boxBorder: s.checks[n] ? 'var(--accent)' : 'var(--muted)', onToggle: () => this.setSetup({ checks: { ...s.checks, [n]: !s.checks[n] } }) });
+      const sl = PRESETS[s.preset].slots, nOn = Object.values(s.checks).filter(Boolean).length;
+      Object.assign(v, {
+        tplChips: Object.entries(TPL).map(([k, tt]) => ({ name: tt.name, on: k === s.tpl, bg: k === s.tpl ? 'var(--ink)' : 'transparent', color: k === s.tpl ? 'var(--bg)' : 'var(--ink)', border: k === s.tpl ? 'var(--ink)' : 'var(--line)', onClick: () => this.openSetup(k) })),
+        setupOwner: s.owner, setupTitle: s.title, setupPlace: s.place,
+        onOwner: e => this.setSetup({ owner: e.target.value }), onTitle: e => this.setSetup({ title: e.target.value }), onPlace: e => this.setSetup({ place: e.target.value }),
+        presetBtns: Object.entries(PRESETS).map(([k, p]) => ({ label: p.label, on: k === s.preset, bg: k === s.preset ? 'var(--ink)' : 'var(--surface)', color: k === s.preset ? 'var(--bg)' : 'var(--ink)', onClick: () => this.setSetup({ preset: k }) })),
+        presetDesc: `${sl.length} slots: ${sl.map(x => x[0]).join(', ')}. You can rename, add, or remove any of them later.`,
+        setupFns: t.fns.map(f => ({ ...row(f[0]), note: f[1] })), setupOpt: t.opt.map(row), hasOpt: t.opt.length > 0,
+        createLabel: nOn ? `Create plan with ${nOn} function${nOn > 1 ? 's' : ''}` : 'Create an empty plan',
+        createPlan: () => this.createPlan()
+      });
+    }
+    if (plan) {
+      const fnValid = plan.functions.find(f => f.id === st.fnId);
+      const cur = fnValid || (wide ? plan.functions[0] : null);
+      const tot = plan.functions.reduce((a, f) => { const s = stats(plan, f); return [a[0] + s.done, a[1] + s.total]; }, [0, 0]);
+      Object.assign(v, {
+        currentId: plan.id, switchOpts: d.plans.map(p => ({ id: p.id, label: `${p.owner}'s plan` })),
+        onSwitch: e => { const id = e.target.value; this.mut(dd => { dd.current = id; dd.last = null; }); this.setState({ fnId: null }); },
+        planEyebrow: `${plan.owner}'s plan · ${PRESETS[plan.preset].label}`, planTitle: plan.title,
+        planMeta: [[plan.place, plan.dates].filter(Boolean).join(' · '), plan.functions.length ? `${tot[0]} of ${tot[1]} slots picked` : ''].filter(Boolean).join('  ·  '),
+        hasFns: plan.functions.length > 0, noFns: plan.functions.length === 0,
+        showOverview: wide || !fnValid, showDetail: !!cur && (wide || !!fnValid), narrow: !wide,
+        ovWidth: wide && cur ? '420px' : '100%', ovMax: wide && cur ? '420px' : '680px', ovMargin: wide && cur ? '0' : '0 auto',
+        ovBorder: wide && cur ? '1px solid var(--line)' : 'none',
+        paneH: wide ? 'calc(100vh - 60px)' : 'auto', paneOv: wide ? 'auto' : 'visible',
+        cards: plan.functions.map(f => { const s = stats(plan, f), sel = !!cur && wide && f.id === cur.id; const th = f.items.filter(i => i.picked);
+          return { name: f.name, when: [f.date, f.time].filter(Boolean).join(' · ') || 'No date yet', dress: f.dress || 'No dress code yet', count: `${s.done} of ${s.total}`,
+            missingLabel: s.missing ? `${s.missing} missing` : 'Complete', mColor: s.missing ? 'var(--accent)' : 'var(--muted)', swatch: swatch(f.hue), sel,
+            border: sel ? 'var(--accent)' : 'var(--line)', shadow: sel ? '0 0 0 1px var(--accent)' : 'none',
+            thumbs: th.slice(0, 7).map(i => ({ bg: i.broken ? 'var(--soft)' : stripe(i.hue) })), gaps: Array.from({ length: Math.min(s.missing, Math.max(0, 7 - th.length)) }, (_, k) => ({ k })),
+            open: () => { this.setState({ fnId: f.id }); if (!wide) window.scrollTo(0, 0); } }; }),
+        addFunction: () => { const id = uid(); this.mut(dd => { const p = this.plan(dd); p.functions.push({ id, name: 'New function', date: '', time: '', dress: '', venue: '', hue: OPT_HUE[p.functions.length % 6], items: [] }); }); this.setState({ fnId: id }); },
+        openCapture: () => this.openSheet(cur ? cur.id : null, null),
+        backToOverview: () => { this.setState({ fnId: null }); window.scrollTo(0, 0); }
+      });
+      if (cur) {
+        const s = stats(plan, cur), fid = cur.id;
+        const setF = k => e => { const val = e.target.value; this.mut(dd => { this.getFn(dd, fid)[k] = val; }); };
+        Object.assign(v, {
+          fnName: cur.name, onFnName: setF('name'), fnSwatch: swatch(cur.hue),
+          fnFields: [['Date', 'date', 'e.g. Tue, Jun 23'], ['Time of day', 'time', 'Morning, evening'], ['Dress code', 'dress', 'e.g. Pastels'], ['Venue', 'venue', 'Lawn, indoors, beach']].map(([label, k, ph]) => ({ label, value: cur[k], ph, onChange: setF(k) })),
+          fnCount: `${s.done} of ${s.total} picked`, fnMissing: s.missing ? `${s.missing} still missing` : 'Every slot is covered', fnMissColor: s.missing ? 'var(--accent)' : 'var(--muted)',
+          deleteFn: () => { this.destructive(`${cur.name} deleted`, dd => { const p = this.plan(dd); p.functions = p.functions.filter(f => f.id !== fid); }); this.setState({ fnId: null }); },
+          slots: plan.slots.map(sl => {
+            const items = cur.items.filter(i => i.slot === sl.id), pk = items.find(i => i.picked), missing = !sl.optional && !pk;
+            return { name: sl.name,
+              status: pk ? 'Picked' : items.length ? `${items.length} to choose from` : sl.optional ? 'Optional' : 'Missing',
+              statusColor: missing ? 'var(--accent)' : 'var(--muted)',
+              mark: pk ? '✓' : '', markBg: pk ? 'var(--accent)' : 'transparent', markBorder: pk || missing ? 'var(--accent)' : 'var(--line)', markStyle: !pk && !items.length ? 'dashed' : 'solid',
+              addLabel: items.length ? 'Add another' : 'Add', hint: !items.length && sl.hint ? 'e.g. ' + sl.hint : '',
+              addBorder: missing && !items.length ? 'var(--accent)' : 'var(--line)', addColor: missing && !items.length ? 'var(--accent)' : 'var(--muted)', addAria: 'Add to ' + sl.name,
+              onAdd: () => this.openSheet(fid, sl.id),
+              tiles: items.map(it => ({ title: it.title, meta: [it.shop, fmt(it)].filter(Boolean).join(' · '), picked: it.picked, ok: !it.broken, broken: !!it.broken,
+                bg: it.broken ? 'var(--soft)' : stripe(it.hue), outline: it.picked ? '2px solid var(--accent)' : '1px solid transparent', opacity: pk && !it.picked ? 0.72 : 1,
+                label: it.title.split(' ').pop().toLowerCase() + ' photo', domain: it.shop, link: it.link || '#',
+                status: it.status, statusDot: it.status === 'Ready' || it.status === 'Packed' ? 'var(--ink)' : it.status === 'Idea' ? 'var(--line)' : 'var(--accent)',
+                statusAria: `Status ${it.status}. Tap to change`, aria: `${it.title}${it.picked ? ', picked. Tap to unpick' : '. Tap to pick'}`,
+                onPick: () => this.mut(dd => { const f = this.getFn(dd, fid), x = f.items.find(i => i.id === it.id), was = x.picked; f.items.forEach(i => { if (i.slot === x.slot) i.picked = false; }); x.picked = !was; }),
+                onStatus: () => this.mut(dd => { const x = this.getFn(dd, fid).items.find(i => i.id === it.id); x.status = STATUSES[(STATUSES.indexOf(x.status) + 1) % STATUSES.length]; })
+              })) };
+          })
+        });
+      }
+      if (st.sheet) {
+        const sh = st.sheet;
+        Object.assign(v, {
+          sp: wide ? { left: 'auto', top: '0', width: '440px', maxH: '100vh', radius: '0' } : { left: '0', top: 'auto', width: '100%', maxH: '92vh', radius: '20px 20px 0 0' },
+          sheetLink: sh.link, sheetTitle: sh.title, sheetPrice: sh.price, sheetCur: sh.cur, sheetFid: sh.fid, sheetSid: sh.sid,
+          fnOpts: plan.functions.map(f => ({ id: f.id, name: f.name })), slotOpts: plan.slots.map(s => ({ id: s.id, name: s.name })),
+          onSheetLink: e => { const link = e.target.value; this.setState(s2 => ({ sheet: { ...s2.sheet, link, title: s2.sheet.touched ? s2.sheet.title : siteName(link) } })); },
+          onSheetTitle: e => this.setSheet({ title: e.target.value, touched: true }),
+          onSheetPrice: e => this.setSheet({ price: e.target.value }),
+          toggleCur: () => this.setSheet({ cur: sh.cur === '₹' ? '$' : '₹' }),
+          onSheetFn: e => this.setSheet({ fid: e.target.value }), onSheetSlot: e => this.setSheet({ sid: e.target.value }),
+          saveOpacity: sh.title.trim() || sh.link.trim() ? 1 : 0.45,
+          saveItem: () => this.saveItem(), closeSheet: () => this.setState({ sheet: null })
+        });
+      }
+    }
+    return v;
+  }
+}
+</script>
+</body>
+</html>
