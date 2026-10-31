@@ -2,8 +2,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// GitHub Pages serves the site under /<repo>/. Override with BASE_PATH for forks or other hosts.
-const base = process.env.BASE_PATH ?? '/clothes-planner/';
+// Production (Vercel, clothes.kansoboard.com) serves from the root. The GitHub
+// Pages mirror builds with BASE_PATH=/clothes-planner/.
+const base = process.env.BASE_PATH ?? '/';
 
 export default defineConfig({
   base,
